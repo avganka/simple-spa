@@ -1,6 +1,9 @@
 import {Container, Nav, Navbar, Offcanvas} from 'react-bootstrap';
 import {NavLink, Link} from 'react-router-dom';
 
+import UserInfo from './UserInfo';
+import Avatar from '../assets/user.svg';
+
 function Header() {
   return (
     <header>
@@ -27,6 +30,9 @@ function Header() {
                   Обо мне
                 </Nav.Link>
               </Nav>
+              <UserInfo avatar={Avatar} email='sasha.kalmuk@gmail.com'>
+                Aleksandr
+              </UserInfo>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
         </Container>
