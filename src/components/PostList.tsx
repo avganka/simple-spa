@@ -1,28 +1,33 @@
 import {ConnectedProps, connect} from 'react-redux';
-import {Dropdown, Stack} from 'react-bootstrap';
+import {Col, Dropdown, Row, Stack} from 'react-bootstrap';
 import {RootState} from '../store';
-import {fetchPosts} from '../store/actions';
+import {fetchPosts, setSort} from '../store/actions';
 
 import PostCard from './PostCard';
 import {useEffect, useState} from 'react';
 import PostListPreloader from './PostListPreloader';
 import Pagination from './Pagintaion';
+import Sort from './Sort';
+import {SortType} from '../types';
+import {postSorting} from '../helpers';
 
 const mapStateToProps = (state: RootState) => ({
-  posts: state.posts,
+  posts: postSorting(state.sort, state.posts),
   loading: state.loading['posts'],
+  sort: state.sort,
   error: state.error,
 });
 
 const mapDispatchToProps = {
   fetchPosts,
+  setSort,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function PostList({posts, loading, error, fetchPosts}: PropsFromRedux) {
+function PostList({posts, loading, error, sort, fetchPosts, setSort}: PropsFromRedux) {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
@@ -41,11 +46,21 @@ function PostList({posts, loading, error, fetchPosts}: PropsFromRedux) {
     setPage(1);
   };
 
+  const onChangeSortTypeClick = (sort: SortType) => {
+    setSort(sort);
+  };
+
   if (error) return <p className='text-danger'>Error: {error}</p>;
   if (loading) return <PostListPreloader />;
 
   return (
     <>
+      <Row className='d-flex justify-content-between align-items-center mb-3 gap-2'>
+        <Col xs={12} sm='5'>
+          <Sort onSortChange={onChangeSortTypeClick} sort={sort} />
+        </Col>
+      </Row>
+
       <Stack gap={3} className='mb-4'>
         {pagePosts && pagePosts.map((post) => <PostCard key={post.id} post={post} />)}
       </Stack>

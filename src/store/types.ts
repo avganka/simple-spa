@@ -1,5 +1,9 @@
-import {Post} from '../types';
+import {Post, SortType} from '../types';
 
+export interface SetSortAction {
+  type: 'SET_SORT';
+  payload: SortType;
+}
 export interface StartLoadingAction {
   type: 'START_LOADING';
   payload: string;
@@ -21,3 +25,11 @@ export interface FetchPostsFailureAction {
   type: 'FETCH_POSTS_FAILURE';
   payload: string;
 }
+
+export type Actions =
+  | SetSortAction
+  | StartLoadingAction
+  | StopLoadingAction
+  | FetchPostsRequestAction
+  | FetchPostsSuccessAction
+  | FetchPostsFailureAction;
