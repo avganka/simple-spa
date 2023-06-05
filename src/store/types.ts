@@ -1,5 +1,9 @@
 import {Post, SortType} from '../types';
 
+export interface SetSearchStringAction {
+  type: 'SET_SEARCH_STRING';
+  payload: string;
+}
 export interface SetSortAction {
   type: 'SET_SORT';
   payload: SortType;
@@ -27,6 +31,7 @@ export interface FetchPostsFailureAction {
 }
 
 export type Actions =
+  | SetSearchStringAction
   | SetSortAction
   | StartLoadingAction
   | StopLoadingAction

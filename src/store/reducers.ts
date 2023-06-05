@@ -4,6 +4,7 @@ import {Actions} from './types';
 interface InitialState {
   posts: Post[];
   sort: SortType;
+  searchString: string;
   loading: Record<string, boolean>;
   error: string | null;
 }
@@ -11,12 +12,15 @@ interface InitialState {
 const initialState: InitialState = {
   posts: [],
   sort: 'popular',
+  searchString: '',
   loading: {},
   error: null,
 };
 
 const reducer = (state = initialState, action: Actions) => {
   switch (action.type) {
+    case 'SET_SEARCH_STRING':
+      return {...state, searchString: action.payload};
     case 'SET_SORT':
       return {...state, sort: action.payload};
     case 'START_LOADING':

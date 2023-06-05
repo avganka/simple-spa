@@ -1,7 +1,8 @@
 import {ConnectedProps, connect} from 'react-redux';
-import {Col, Dropdown, Row, Stack} from 'react-bootstrap';
+import {CloseButton, Col, Dropdown, Row, Stack} from 'react-bootstrap';
+
 import {RootState} from '../store';
-import {fetchPosts, setSort} from '../store/actions';
+import {fetchPosts, setSort, setSearch} from '../store/actions';
 
 import PostCard from './PostCard';
 import {useEffect, useState} from 'react';
@@ -10,24 +11,39 @@ import Pagination from './Pagintaion';
 import Sort from './Sort';
 import {SortType} from '../types';
 import {postSorting} from '../helpers';
+import Search from './Search';
 
 const mapStateToProps = (state: RootState) => ({
-  posts: postSorting(state.sort, state.posts),
+  posts: postSorting(
+    state.sort,
+    state.posts.filter((post) => post.title.includes(state.searchString))
+  ),
   loading: state.loading['posts'],
-  sort: state.sort,
   error: state.error,
+  sort: state.sort,
+  searchString: state.searchString,
 });
 
 const mapDispatchToProps = {
   fetchPosts,
   setSort,
+  setSearch,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function PostList({posts, loading, error, sort, fetchPosts, setSort}: PropsFromRedux) {
+function PostList({
+  posts,
+  loading,
+  error,
+  sort,
+  searchString,
+  fetchPosts,
+  setSort,
+  setSearch,
+}: PropsFromRedux) {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
@@ -50,6 +66,15 @@ function PostList({posts, loading, error, sort, fetchPosts, setSort}: PropsFromR
     setSort(sort);
   };
 
+  const onSearchSubmit = (searchString: string) => {
+    setSearch(searchString);
+    setPage(1);
+  };
+
+  const onSearchReset = () => {
+    setSearch('');
+  };
+
   if (error) return <p className='text-danger'>Error: {error}</p>;
   if (loading) return <PostListPreloader />;
 
@@ -59,8 +84,18 @@ function PostList({posts, loading, error, sort, fetchPosts, setSort}: PropsFromR
         <Col xs={12} sm='5'>
           <Sort onSortChange={onChangeSortTypeClick} sort={sort} />
         </Col>
+        <Col xs={12} sm='5'>
+          <Search onSearchSubmit={onSearchSubmit} />
+        </Col>
       </Row>
-
+      {searchString && (
+        <>
+          <p className='my-4'>
+            Результаты поиска для: <span className='fw-bold fs-5'>"{searchString}"</span>
+            <CloseButton onClick={onSearchReset} />
+          </p>
+        </>
+      )}
       <Stack gap={3} className='mb-4'>
         {pagePosts && pagePosts.map((post) => <PostCard key={post.id} post={post} />)}
       </Stack>
