@@ -12,6 +12,7 @@ import Sort from './Sort';
 import {SortType} from '../types';
 import {postSorting} from '../helpers';
 import Search from './Search';
+import {useSearchParams} from 'react-router-dom';
 
 const mapStateToProps = (state: RootState) => ({
   posts: postSorting(
@@ -46,6 +47,7 @@ function PostList({
 }: PropsFromRedux) {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const pagePosts = posts.slice((page - 1) * limit, page * limit);
 
@@ -53,26 +55,46 @@ function PostList({
     fetchPosts();
   }, [fetchPosts]);
 
+  useEffect(() => {
+    if (searchParams.has('search')) {
+      setSearch(searchParams.get('search') as string);
+    }
+    if (searchParams.has('sort')) {
+      setSort(searchParams.get('sort') as SortType);
+    }
+  }, [searchParams, setSearch, setSort]);
+
   const onPaginationPageClick = (pageNumber: number) => {
     setPage(pageNumber);
+    searchParams.set('page', pageNumber.toString());
+    setSearchParams(searchParams);
   };
 
   const onChangeLimitClick = (newLimit: number) => {
     setLimit(newLimit);
     setPage(1);
+    searchParams.set('page', '1');
+    setSearchParams(searchParams);
   };
 
   const onChangeSortTypeClick = (sort: SortType) => {
     setSort(sort);
+    searchParams.set('sort', sort);
+    setSearchParams(searchParams);
   };
 
   const onSearchSubmit = (searchString: string) => {
     setSearch(searchString);
     setPage(1);
+    searchParams.set('search', searchString);
+    searchParams.set('page', '1');
+    setSearchParams(searchParams);
   };
 
   const onSearchReset = () => {
     setSearch('');
+    searchParams.delete('search');
+    setSearchParams(searchParams);
   };
 
   if (error) return <p className='text-danger'>Error: {error}</p>;
