@@ -6,6 +6,7 @@ import {ConnectedProps, connect} from 'react-redux';
 import {RootState} from '../store';
 import {fetchUserWithPosts} from '../store/actions';
 import PostCard from './PostCard';
+import UserDetailPreloader from './UserDetailPreloader';
 import defaultAvatar from '../assets/default-user.svg';
 import companyIcon from '../assets/company.svg';
 import phoneIcon from '../assets/phone.svg';
@@ -37,6 +38,7 @@ const UserDetail = ({user, loading, error, fetchUserWithPosts}: PropsFromRedux) 
     }
   }, [userId, fetchUserWithPosts]);
 
+  if (loading) return <UserDetailPreloader />;
   if (error) return <p className='text-danger'>Error: {error}</p>;
   if (!user)
     return (
