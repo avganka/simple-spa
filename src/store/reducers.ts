@@ -1,8 +1,9 @@
-import {Post, SortType, Comment} from '../types';
+import {Post, SortType, Comment, User} from '../types';
 import {Actions} from './types';
 
 interface InitialState {
   posts: Post[];
+  user: User | null;
   comments: Record<string, Comment[]>;
   sort: SortType;
   searchString: string;
@@ -12,6 +13,7 @@ interface InitialState {
 
 const initialState: InitialState = {
   posts: [],
+  user: null,
   comments: {},
   sort: 'popular',
   searchString: '',
@@ -36,8 +38,11 @@ const reducer = (state = initialState, action: Actions) => {
         ...state,
         comments: {...state.comments, [action.payload.postId]: action.payload.comments},
       };
+    case 'FETCH_USER_WITH_POSTS_SUCCESS':
+      return {...state, user: action.payload};
     case 'FETCH_POSTS_FAILURE':
     case 'FETCH_COMMENTS_FAILURE':
+    case 'FETCH_USER_WITH_POSTS_FAILURE':
       return {...state, error: action.payload};
     default:
       return state;

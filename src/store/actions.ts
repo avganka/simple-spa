@@ -18,3 +18,8 @@ export const fetchComments = (postId: number) => ({
   type: 'FETCH_COMMENTS_REQUEST',
   payload: postId,
 });
+
+export const fetchUserWithPosts = (userId: number) => ({
+  type: 'FETCH_USER_WITH_POSTS_REQUEST',
+  payload: userId,
+});

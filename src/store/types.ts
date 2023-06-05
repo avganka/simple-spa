@@ -1,4 +1,4 @@
-import {Post, SortType} from '../types';
+import {Post, SortType, User} from '../types';
 
 export interface SetSearchStringAction {
   type: 'SET_SEARCH_STRING';
@@ -32,13 +32,13 @@ export interface FetchPostsFailureAction {
 
 export interface FetchCommentsRequestAction {
   type: 'FETCH_COMMENTS_REQUEST';
-  payload: string;
+  payload: number;
 }
 
 export interface FetchCommentsSuccessAction {
   type: 'FETCH_COMMENTS_SUCCESS';
   payload: {
-    postId: string;
+    postId: number;
     comments: Comment[];
   };
 }
@@ -48,7 +48,25 @@ export interface FetchCommentsFailureAction {
   payload: string;
 }
 
+export interface FetchUserWithPostsRequestAction {
+  type: 'FETCH_USER_WITH_POSTS_REQUEST';
+  payload: number;
+}
+
+export interface FetchUserWithPostsSuccessAction {
+  type: 'FETCH_USER_WITH_POSTS_SUCCESS';
+  payload: User;
+}
+
+export interface FetchUserWithPostsFailureAction {
+  type: 'FETCH_USER_WITH_POSTS_FAILURE';
+  payload: string;
+}
+
 export type Actions =
+  | FetchUserWithPostsRequestAction
+  | FetchUserWithPostsSuccessAction
+  | FetchUserWithPostsFailureAction
   | FetchCommentsRequestAction
   | FetchCommentsSuccessAction
   | FetchCommentsFailureAction

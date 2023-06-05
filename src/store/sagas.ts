@@ -5,12 +5,15 @@ import {
   FetchCommentsSuccessAction,
   FetchPostsFailureAction,
   FetchPostsSuccessAction,
+  FetchUserWithPostsFailureAction,
+  FetchUserWithPostsRequestAction,
+  FetchUserWithPostsSuccessAction,
   StartLoadingAction,
   StopLoadingAction,
 } from './types';
 import axios from 'axios';
-import {Post} from '../types';
-import {getPostCommentsApi, getPostsApi} from './api';
+import {Post, User} from '../types';
+import {getPostCommentsApi, getPostsApi, getUserWithPostsCommentsApi} from './api';
 
 function* fetchPostsSaga() {
   try {
@@ -49,9 +52,30 @@ function* fetchCommentsSaga(action: FetchCommentsRequestAction) {
   }
 }
 
+function* fetchUserWithPostsSaga(action: FetchUserWithPostsRequestAction) {
+  try {
+    yield put<StartLoadingAction>({type: 'START_LOADING', payload: 'user'});
+    const response: {data: User} = yield call(getUserWithPostsCommentsApi, action.payload);
+    yield put<FetchUserWithPostsSuccessAction>({
+      type: 'FETCH_USER_WITH_POSTS_SUCCESS',
+      payload: response.data,
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      yield put<FetchUserWithPostsFailureAction>({
+        type: 'FETCH_USER_WITH_POSTS_FAILURE',
+        payload: error.message || 'Непредвиденная ошибка',
+      });
+    }
+  } finally {
+    yield put<StopLoadingAction>({type: 'STOP_LOADING', payload: 'user'});
+  }
+}
+
 function* rootSaga() {
   yield takeEvery('FETCH_POSTS_REQUEST', fetchPostsSaga);
   yield takeEvery('FETCH_COMMENTS_REQUEST', fetchCommentsSaga);
+  yield takeEvery('FETCH_USER_WITH_POSTS_REQUEST', fetchUserWithPostsSaga);
 }
 
 export default rootSaga;
