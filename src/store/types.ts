@@ -1,5 +1,13 @@
 import {Post} from '../types';
 
+export interface StartLoadingAction {
+  type: 'START_LOADING';
+  payload: string;
+}
+export interface StopLoadingAction {
+  type: 'STOP_LOADING';
+  payload: string;
+}
 export interface FetchPostsRequestAction {
   type: 'FETCH_POSTS_REQUEST';
 }

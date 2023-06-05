@@ -1,11 +1,17 @@
 import {call, put, takeEvery} from 'redux-saga/effects';
-import {FetchPostsFailureAction, FetchPostsSuccessAction} from './types';
+import {
+  FetchPostsFailureAction,
+  FetchPostsSuccessAction,
+  StartLoadingAction,
+  StopLoadingAction,
+} from './types';
 import axios from 'axios';
 import {Post} from '../types';
 
 // Получить все посты
 function* fetchPostsSaga() {
   try {
+    yield put<StartLoadingAction>({type: 'START_LOADING', payload: 'posts'});
     const response: {data: Post[]} = yield call(
       axios.get,
       'https://jsonplaceholder.typicode.com/posts'
@@ -18,6 +24,8 @@ function* fetchPostsSaga() {
         payload: error.message || 'Непредвиденная ошибка',
       });
     }
+  } finally {
+    yield put<StopLoadingAction>({type: 'STOP_LOADING', payload: 'posts'});
   }
 }
 

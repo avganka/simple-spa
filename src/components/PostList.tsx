@@ -5,9 +5,11 @@ import {fetchPosts} from '../store/actions';
 
 import PostCard from './PostCard';
 import {useEffect} from 'react';
+import PostListPreloader from './PostListPreloader';
 
 const mapStateToProps = (state: RootState) => ({
   posts: state.posts,
+  loading: state.loading['posts'],
   error: state.error,
 });
 
@@ -19,10 +21,13 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function PostList({posts, fetchPosts}: PropsFromRedux) {
+function PostList({posts, loading, error, fetchPosts}: PropsFromRedux) {
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
+
+  if (error) return <p className='text-danger'>Error: {error}</p>;
+  if (loading) return <PostListPreloader />;
 
   return (
     <Stack gap={3} className='mb-4'>
