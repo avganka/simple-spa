@@ -13,3 +13,8 @@ export const setSort = (sortType: SortType) => ({
 export const fetchPosts = () => ({
   type: 'FETCH_POSTS_REQUEST',
 });
+
+export const fetchComments = (postId: number) => ({
+  type: 'FETCH_COMMENTS_REQUEST',
+  payload: postId,
+});

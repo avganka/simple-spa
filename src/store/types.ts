@@ -30,7 +30,28 @@ export interface FetchPostsFailureAction {
   payload: string;
 }
 
+export interface FetchCommentsRequestAction {
+  type: 'FETCH_COMMENTS_REQUEST';
+  payload: string;
+}
+
+export interface FetchCommentsSuccessAction {
+  type: 'FETCH_COMMENTS_SUCCESS';
+  payload: {
+    postId: string;
+    comments: Comment[];
+  };
+}
+
+export interface FetchCommentsFailureAction {
+  type: 'FETCH_COMMENTS_FAILURE';
+  payload: string;
+}
+
 export type Actions =
+  | FetchCommentsRequestAction
+  | FetchCommentsSuccessAction
+  | FetchCommentsFailureAction
   | SetSearchStringAction
   | SetSortAction
   | StartLoadingAction
